@@ -1,6 +1,7 @@
 using CHV;
 using System.Collections.Generic;
 using Core.Character;
+using Core.Handler;
 using UnityEngine;
 using Utility;
 
@@ -20,6 +21,12 @@ public class GameManager : MonoSingleton<GameManager>
     [HideInInspector] public List<Character> monsters = new List<Character>();
     
     #endregion
+
+    #region Handler
+
+    public BackgroundHandler backgroundHandler;
+
+    #endregion
     
     public GameObject mainCharacterPrefab;
     public GameObject monsterPrefab;
@@ -28,7 +35,13 @@ public class GameManager : MonoSingleton<GameManager>
     {
         mainCharacter = Instantiate(mainCharacterPrefab, mainCharacterRoot).GetComponent<Character>();
         mainCharacter.Init(DataTable_Character_Data.GetData(10001));
-        
+        backgroundHandler.OnScrollCompletedEvent += GenerateMonster;
+
+        GenerateMonster();
+    }
+
+    private void GenerateMonster()
+    {
         for (var i = 0; i < 3; i++)
         {
             var monster = Instantiate(monsterPrefab, monsterRoot).GetComponent<Character>();
@@ -38,7 +51,17 @@ public class GameManager : MonoSingleton<GameManager>
             monsterPosition = new Vector3(monsterPosition.x - 1.0f * i, monsterPosition.y, monsterPosition.z);
             monsterTransform.position = monsterPosition;
             monster.Init(DataTable_Character_Data.GetData(20001));
+            
+            monster.OnCharacterDead += OnMonsterDead;
             monsters.Add(monster);
+        }
+    }
+
+    private void OnMonsterDead()
+    {
+        if (monsters.Count == 0)
+        {
+            backgroundHandler.OnScrolling();
         }
     }
 }

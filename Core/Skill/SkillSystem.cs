@@ -2,17 +2,21 @@ using System.Collections.Generic;
 using CHV;
 using Core.Character;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class SkillSystem : MonoBehaviour
 {
     private Character owner;
     private readonly List<Skill> skills = new();
-
+    
+    public float globalCooldown;
+    
     public GameObject skillObj;
     
     public void Init(Character character)
     {
         owner = character;
+        globalCooldown = 1.0f;
         
         CreateSkill();
     }
@@ -29,6 +33,8 @@ public class SkillSystem : MonoBehaviour
     
     public void UpdateSkill()
     {
+        globalCooldown -= Time.deltaTime;
+        
         foreach (var skill in skills)
         {
             skill.CalculateCooldownTime();
