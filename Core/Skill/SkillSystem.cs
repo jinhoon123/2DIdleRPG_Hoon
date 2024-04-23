@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using CHV;
-using Core.Character;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class SkillSystem : MonoBehaviour
 {
@@ -10,24 +9,29 @@ public class SkillSystem : MonoBehaviour
     private readonly List<Skill> skills = new();
     
     public float globalCooldown;
+
+    private Queue<Skill> skillQueue = new();
     
-    public GameObject skillObj;
-    
-    public void Init(Character character)
+    public async UniTask Init(Character character)
     {
         owner = character;
         globalCooldown = 1.0f;
-        
-        CreateSkill();
+
+        await CreateSkill();
     }
 
-    private void CreateSkill()
+    private async UniTask CreateSkill()
     {
         if (owner.Data.CharacterType == DataTable_Character_Data.eCharacterType.MainCharacter)
         {
-            var skill = Instantiate(skillObj, GameManager.I.skillRoot).GetComponent<Skill>();
-            skill.Init(owner, 10001);
-            skills.Add(skill);
+            var skill1 = new Skill();
+            await skill1.Init(owner, 10001);
+            
+            var skill2 = new Skill();
+            await skill2.Init(owner, 10002);
+            
+            skills.Add(skill1);
+            skills.Add(skill2);
         }
     }
     
@@ -41,8 +45,17 @@ public class SkillSystem : MonoBehaviour
 
             if (skill.IsUseSkill())
             {
-                skill.ExecuteSkill();
+                skill.ResetCooldown();
+                skillQueue.Enqueue(skill);
             }
+        }
+
+        if (skillQueue.Count > 0 && globalCooldown <= 0.0f && GameManager.I.monsters.Count != 0)
+        {
+            var skill = skillQueue.Dequeue();
+            skill.Execute();
+
+            globalCooldown = 1.0f;
         }
     }
 }

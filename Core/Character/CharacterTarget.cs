@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using CHV;
-using Core.Character;
 using UnityEngine;
 
 public class CharacterTarget : MonoBehaviour

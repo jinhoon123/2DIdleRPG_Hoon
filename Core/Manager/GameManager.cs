@@ -1,7 +1,6 @@
 using CHV;
 using System.Collections.Generic;
-using Core.Character;
-using Core.Handler;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Utility;
 
@@ -34,13 +33,19 @@ public class GameManager : MonoSingleton<GameManager>
     private void Awake()
     {
         mainCharacter = Instantiate(mainCharacterPrefab, mainCharacterRoot).GetComponent<Character>();
-        mainCharacter.Init(DataTable_Character_Data.GetData(10001));
-        backgroundHandler.OnScrollCompletedEvent += GenerateMonster;
-
-        GenerateMonster();
+        mainCharacter.Init(DataTable_Character_Data.GetData(10001)).Forget();
+        
+        backgroundHandler.OnScrollCompletedEvent += GenerateMonsters;
+        
+        GenerateMonster().Forget();
     }
 
-    private void GenerateMonster()
+    private void GenerateMonsters()
+    {
+        GenerateMonster().Forget();
+    }
+
+    private async UniTaskVoid GenerateMonster()
     {
         for (var i = 0; i < 3; i++)
         {
@@ -50,7 +55,7 @@ public class GameManager : MonoSingleton<GameManager>
             
             monsterPosition = new Vector3(monsterPosition.x - 1.0f * i, monsterPosition.y, monsterPosition.z);
             monsterTransform.position = monsterPosition;
-            monster.Init(DataTable_Character_Data.GetData(20001));
+            await monster.Init(DataTable_Character_Data.GetData(20001));
             
             monster.OnCharacterDead += OnMonsterDead;
             monsters.Add(monster);

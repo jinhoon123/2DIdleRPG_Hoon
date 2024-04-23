@@ -1,31 +1,27 @@
 ﻿using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Core.Character
+public class CharacterHealth : MonoBehaviour
 {
-    public class CharacterHealth : MonoBehaviour
+    public Character Owner { get; private set; }
+        
+    public float maxHealth;
+    public float currentHealth;
+        
+    public void Init(Character character)
     {
-        public Character Owner { get; private set; }
-        
-        public float maxHealth;
-        public float currentHealth;
-        
-        public void Init(Character character)
-        {
-            Owner = character;
+        Owner = character;
             
-            maxHealth = 100;
-            currentHealth = maxHealth;
-        }
+        maxHealth = 100;
+        currentHealth = maxHealth;
+    }
 
-        public void UpdateHealth(float amount)
+    public void UpdateHealth(float amount)
+    {
+        currentHealth -= amount;
+
+        if (currentHealth <= 0)
         {
-            currentHealth -= amount;
-
-            if (currentHealth <= 0)
-            {
-                Owner.Dead();
-            }
+            Owner.Dead();
         }
     }
 }
