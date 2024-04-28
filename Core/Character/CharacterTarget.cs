@@ -9,13 +9,10 @@ public class CharacterTarget : MonoBehaviour
     [SerializeField] 
     private new BoxCollider2D collider;
     
-    private Bounds bounds;
     
     public void Init(Character inOwner)
     {
         owner = inOwner;
-        bounds = collider.bounds;
-        
         SetupTarget();
     }
     
@@ -54,6 +51,6 @@ public class CharacterTarget : MonoBehaviour
 
     public bool IsHitTarget(Bounds inBounds)
     {     
-        return bounds.min.x <= inBounds.max.x && bounds.max.x >= inBounds.min.x && bounds.min.y <= inBounds.max.y && bounds.max.y >= inBounds.min.y;
+        return collider.bounds.min.x <= inBounds.max.x && collider.bounds.max.x >= inBounds.min.x && collider.bounds.min.y <= inBounds.max.y && collider.bounds.max.y >= inBounds.min.y;
     }
 }

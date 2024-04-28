@@ -21,10 +21,16 @@ public class SkillProjectile : MonoBehaviour
         {
             transform.Translate(skillDirection * (Time.deltaTime * skill.Data.Speed));
 
+            if (skill.Owner.characterTarget.GetTarget() is null)
+            {
+                return;
+            }
+            
             if (skill.Owner.characterTarget.GetTarget().characterTarget.IsHitTarget(collider.bounds))
             {
+                // 
                 skill.Owner.characterTarget.GetTarget().characterHealth.UpdateHealth(25);
-                gameObject.SetActive(false);
+                Destroy(gameObject);
             }
         }
     }

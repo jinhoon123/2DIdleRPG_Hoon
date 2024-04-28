@@ -56,11 +56,12 @@ public class GameManager : MonoSingleton<GameManager>
             var monsterTransform = monster.transform;
             var monsterPosition = monsterTransform.position;
             
-            monsterPosition = new Vector3(monsterPosition.x - 1.0f * i, monsterPosition.y, monsterPosition.z);
+            monsterPosition = new Vector3(monsterPosition.x - 0.5f * i, monsterPosition.y, monsterPosition.z);
             monsterTransform.position = monsterPosition;
             await monster.Init(DataTable_Character_Data.GetData(20001));
             
             monster.characterHealth.OnCharacterDead += OnMonsterDead;
+            monster.gameObject.name = $"monster{i}";
             monsters.Add(monster);
         }
     }
