@@ -2,16 +2,38 @@
 
 public class CharacterMovement : MonoBehaviour
 {
-    public Character Owner { get; private set; }
+    private Character owner;
         
-    public void Init(Character character)
+    public void Init(Character inOwner)
     {
-        Owner = character;
+        owner = inOwner;
+        
+        GameManager.I.backHandler.OnScrollStartEvent += OnMovement;
+        GameManager.I.backHandler.OnScrollCompletedEvent += OnStop;
     }
 
-        
-    public void UpdateMovement(float x, float y)
+
+    private void OnMovement()
     {
-            
+        if (owner.characterHealth.isDead == false)
+        {
+            owner.characterAnimation.PlayAnimation("Run");
+        }
+        else
+        {
+            GameManager.I.backHandler.OnScrollStartEvent -= OnMovement;
+        }
+    }
+
+    private void OnStop()
+    {
+        if (owner.characterHealth.isDead == false)
+        {
+            owner.characterAnimation.PlayAnimation("Idle");
+        }
+        else
+        {
+            GameManager.I.backHandler.OnScrollStartEvent -= OnStop;
+        }
     }
 }

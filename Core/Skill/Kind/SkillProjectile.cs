@@ -1,11 +1,13 @@
+using System;
 using UnityEngine;
 
 public class SkillProjectile : MonoBehaviour
 {
     private Skill skill;
-
     private Vector2 skillDirection;
 
+    [SerializeField]
+    private new BoxCollider2D collider;
     private bool inited;
     
     private void Awake()
@@ -19,35 +21,26 @@ public class SkillProjectile : MonoBehaviour
         {
             transform.Translate(skillDirection * (Time.deltaTime * skill.Data.Speed));
 
-            if (CheckHit())
+            if (skill.Owner.characterTarget.GetTarget().characterTarget.IsHitTarget(collider.bounds))
             {
-                skill.Owner.characterTarget.GetTarget().characterHealth.UpdateHealth(100);
+                skill.Owner.characterTarget.GetTarget().characterHealth.UpdateHealth(25);
                 gameObject.SetActive(false);
             }
         }
     }
-
-    public void Init(Skill skill)
+    
+    public void Init(Skill inSkill)
     {
-        this.skill = skill;
-        transform.position = skill.Owner.Weapon.position;
+        skill = inSkill;
+        transform.position = inSkill.Owner.Weapon.position;
         SetDirection();
         
         inited = true;
         gameObject.SetActive(true);
     }
-
-    private bool CheckHit()
-    {
-        return Vector2.Distance(transform.position, skill.Owner.characterTarget.GetTarget().transform.position) < 0.1f;
-    }
     
     private void SetDirection()
     {
-        if (skill.Owner.characterTarget.GetTarget() != null)
-        {
-            skillDirection = (skill.Owner.characterTarget.GetTarget().transform.position - skill.Owner.transform.position).normalized;
-            skillDirection = new Vector2(skillDirection.x, 0f);
-        }
+        skillDirection = Vector2.right;
     }
 }

@@ -7,7 +7,8 @@ public class BackgroundHandler : MonoBehaviour
     #region 이벤트
 
     public delegate void ScrollEvent();
-        
+
+    public event ScrollEvent OnScrollStartEvent;
     public event ScrollEvent OnScrollCompletedEvent;
 
     #endregion
@@ -30,7 +31,8 @@ public class BackgroundHandler : MonoBehaviour
 
     #region 상태
 
-    private bool isScrolling; // 배경이 스크롤 되고 있는지를 확인하는 상태
+    public bool isScrolling; // 배경이 스크롤 되고 있는지를 확인하는 상태
+    private bool isScrollStarted;
 
     #endregion
 
@@ -44,6 +46,7 @@ public class BackgroundHandler : MonoBehaviour
     {
         time = 0;
         isScrolling = true;
+        isScrollStarted = false;
         offset = mat.GetTextureOffset("_MainTex").x; // Initial offset will be current texture offset
     }
 
@@ -57,21 +60,22 @@ public class BackgroundHandler : MonoBehaviour
             {
                 return;
             }
+
+            if (isScrollStarted == false)
+            {
+                OnScrollStartEvent?.Invoke();
+                isScrollStarted = true;
+            }
             
             offset += (Time.deltaTime * scrollSpeed) / 10f;
             mat.SetTextureOffset("_MainTex", new Vector2(offset, 0));
                 
             if (time > scrollTime)
             {
-                StartCoroutine(ScrollCompleted());
+                OnScrollCompletedEvent?.Invoke();
                 isScrolling = false;
+                isScrollStarted = false;
             }
         }
-    }
-
-    private IEnumerator ScrollCompleted()
-    {
-        yield return new WaitForSeconds(1f);
-        OnScrollCompletedEvent?.Invoke();
     }
 }

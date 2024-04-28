@@ -23,7 +23,9 @@ public class GameManager : MonoSingleton<GameManager>
 
     #region Handler
 
-    public BackgroundHandler backgroundHandler;
+    public BackgroundHandler backHandler;
+    public BackgroundHandler groundHandler;
+    
 
     #endregion
     
@@ -32,10 +34,11 @@ public class GameManager : MonoSingleton<GameManager>
     
     private void Awake()
     {
+        // 메인 캐릭터 생성 및 초기화
         mainCharacter = Instantiate(mainCharacterPrefab, mainCharacterRoot).GetComponent<Character>();
         mainCharacter.Init(DataTable_Character_Data.GetData(10001)).Forget();
         
-        backgroundHandler.OnScrollCompletedEvent += GenerateMonsters;
+        backHandler.OnScrollCompletedEvent += GenerateMonsters;
         
         GenerateMonster().Forget();
     }
@@ -57,7 +60,7 @@ public class GameManager : MonoSingleton<GameManager>
             monsterTransform.position = monsterPosition;
             await monster.Init(DataTable_Character_Data.GetData(20001));
             
-            monster.OnCharacterDead += OnMonsterDead;
+            monster.characterHealth.OnCharacterDead += OnMonsterDead;
             monsters.Add(monster);
         }
     }
@@ -66,7 +69,8 @@ public class GameManager : MonoSingleton<GameManager>
     {
         if (monsters.Count == 0)
         {
-            backgroundHandler.OnScrolling();
+            backHandler.OnScrolling();
+            groundHandler.OnScrolling();
         }
     }
 }

@@ -16,13 +16,19 @@ public class Skill
         Owner = character;
         Data = DataTable_Skill_Data.GetData(skillID);
         
-        await ResourceHandler.InstantiateSkillAsset<SkillAsset>("Skill" + Data.TID.ToString(), (result) => Asset = result);
+        await ResourceHandler.I.InstantiateSkillAsset<SkillAsset>("Skill" + Data.TID.ToString(), (result) => Asset = result);
 
         ResetCooldown();
     }
     
     public void CalculateCooldownTime()
     {
+        // 배경이 스크롤 되는동안은 스킬 쿨타임이 감소되지 않게 하기
+        if (GameManager.I.backHandler.isScrolling)
+        {
+            return;
+        }
+        
         cooldownTime -= Time.deltaTime;
     }
 
@@ -32,13 +38,18 @@ public class Skill
         {
             return false;
         }
+
+        if (Owner.characterTarget.GetTarget() is null)
+        {
+            return false;
+        }
         
         return true;
     }
 
     public void Execute()
     {
-        ResourceHandler.InstantiateSkillPrefab(this);
+        ResourceHandler.I.InstantiateSkillPrefab(this);
     }
     
     public void ResetCooldown()

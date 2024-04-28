@@ -6,11 +6,13 @@ public class Character : MonoBehaviour
 {
     #region Components
 
-    private CharacterMovement characterMovement;
+    public CharacterMovement characterMovement;
+    public CharacterAnimation characterAnimation;
         
     public CharacterTarget characterTarget;
     public CharacterHealth characterHealth;
-        
+
+    public CharacterEvent characterEvent;
     public SkillSystem skillSystem;
 
     #endregion
@@ -20,15 +22,7 @@ public class Character : MonoBehaviour
     public DataTable_Character_Data Data;
         
     #endregion
-
-    #region Events
-
-    public delegate void CharacterEvent();
-
-    public event CharacterEvent OnCharacterDead; 
-
-    #endregion
-
+    
     #region State
 
     private bool inited;
@@ -46,6 +40,8 @@ public class Character : MonoBehaviour
         if (inited)
         {
             characterTarget.UpdateTarget();
+            
+            skillSystem.UpdateBasicAttack();
             skillSystem.UpdateSkill();
         }
     }
@@ -68,23 +64,21 @@ public class Character : MonoBehaviour
         characterMovement = GetComponent<CharacterMovement>();
         characterMovement.Init(this);
 
+        characterAnimation = GetComponent<CharacterAnimation>();
+        characterAnimation.Init(this);
+        
         characterTarget = GetComponent<CharacterTarget>();
         characterTarget.Init(this);
 
         characterHealth = GetComponent<CharacterHealth>();
         characterHealth.Init(this);
 
+        characterEvent = GetComponent<CharacterEvent>();
+        characterEvent.Init(this);
+
         skillSystem = GetComponent<SkillSystem>();
         await skillSystem.Init(this);
 
         Weapon = transform.Find("Weapon");
-    }
-
-
-    public void Dead()
-    {
-        GameManager.I.monsters.Remove(this);
-        OnCharacterDead?.Invoke();
-        Destroy(gameObject);
     }
 }
