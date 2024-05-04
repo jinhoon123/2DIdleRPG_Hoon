@@ -1,4 +1,4 @@
-﻿using CHV;
+﻿using System.Collections;
 using UnityEngine;
 
 public class CharacterHealth : MonoBehaviour
@@ -16,9 +16,15 @@ public class CharacterHealth : MonoBehaviour
 
     public bool isDead;
     
+    private SpriteRenderer spriteRenderer;
+    
+    [SerializeField]
+    private Transform head = null;
+    
     public void Init(Character inOwner)
     {
         owner = inOwner;
+        spriteRenderer = GetComponent<SpriteRenderer>();
         
         maxHealth = 100;
         currentHealth = maxHealth;
@@ -28,6 +34,12 @@ public class CharacterHealth : MonoBehaviour
     {
         currentHealth -= amount;
 
+        if (amount > 0)
+        {
+            UIManager.I.InstantiateDamageUIPrefab("DamageNormal", head.position, amount);
+            OnHit();
+        }
+        
         if (currentHealth <= 0)
         {
             Dead();
@@ -41,5 +53,18 @@ public class CharacterHealth : MonoBehaviour
         GameManager.I.monsters.Remove(owner);
         OnCharacterDead?.Invoke();
         Destroy(gameObject);
+    }
+    
+    public void OnHit()
+    {
+        StartCoroutine(ChangeColorTemporarily(Color.red, 0.1f));
+    }
+
+    private IEnumerator ChangeColorTemporarily(Color color, float duration)
+    {
+        Color originalColor = spriteRenderer.color;
+        spriteRenderer.color = color;
+        yield return new WaitForSeconds(duration);
+        spriteRenderer.color = originalColor;
     }
 }
