@@ -28,7 +28,6 @@ public class SkillProjectile : MonoBehaviour
             
             if (skill.Owner.characterTarget.GetTarget().characterTarget.IsHitTarget(collider.bounds))
             {
-                // 
                 skill.Owner.characterTarget.GetTarget().characterHealth.UpdateHealth(25);
                 Destroy(gameObject);
             }

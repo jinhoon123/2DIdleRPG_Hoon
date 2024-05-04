@@ -42,11 +42,11 @@ public class SkillSystem : MonoBehaviour
             await skill1.Init(owner, 10001); // 기본공격
             BasicAttack = skill1;
 
-            // var skill2 = new Skill();
-            // await skill2.Init(owner, 10002);
+             var skill2 = new Skill();
+             await skill2.Init(owner, 20001);
 
 
-            //skills.Add(skill2);
+            skills.Add(skill2);
         }
     }
 

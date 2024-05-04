@@ -27,5 +27,15 @@ public class ResourceHandler : MonoSingleton<ResourceHandler>
                 skillPrefab.Init(skill);
             };
         }
+
+        if (skill.Data.Kind == DataTable_Skill_Data.eKind.Target)
+        {
+            skill.Asset.skillPrefab.InstantiateAsync(Vector3.zero, Quaternion.identity, GameManager.I.skillRoot)
+                .Completed += (obj) =>
+            {
+                var skillPrefab = obj.Result.GetComponent<SkillTarget>();
+                skillPrefab.Init(skill);
+            };
+        }
     }
 }
