@@ -1,4 +1,4 @@
-using System;
+using CHV;
 using UnityEngine;
 
 public class SkillProjectile : MonoBehaviour
@@ -28,7 +28,11 @@ public class SkillProjectile : MonoBehaviour
             
             if (skill.Owner.characterTarget.GetTarget().characterTarget.IsHitTarget(collider.bounds))
             {
-                skill.Owner.characterTarget.GetTarget().characterHealth.UpdateHealth(25);
+                var skillDamage = new Unified(skill.Data.Attack);
+                var ownerDamage = skill.Owner.characterStat.GetStat(DataTable_Stat_Data.eStatType.Attack);
+                var damage = skillDamage * ownerDamage;
+                
+                skill.Owner.characterTarget.GetTarget().characterHealth.UpdateHealth(damage);
                 Destroy(gameObject);
             }
         }

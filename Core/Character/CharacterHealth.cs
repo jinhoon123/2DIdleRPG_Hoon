@@ -30,13 +30,13 @@ public class CharacterHealth : MonoBehaviour
         currentHealth = maxHealth;
     }
     
-    public void UpdateHealth(float amount)
+    public void UpdateHealth(Unified damage)
     {
-        currentHealth -= amount;
+        currentHealth -= CalculateFinalDamage(damage);
 
-        if (amount > 0)
+        if (damage.FloatPart > 0)
         {
-            UIManager.I.InstantiateDamageUIPrefab("DamageNormal", head.position, amount);
+            UIManager.I.InstantiateDamageUIPrefab("DamageNormal", head.position, damage.FloatPart);
             OnHit();
         }
         
@@ -44,6 +44,15 @@ public class CharacterHealth : MonoBehaviour
         {
             Dead();
         }
+    }
+
+    private float CalculateFinalDamage(Unified damage)
+    {
+        // 크리티컬 확률
+        
+        // 확률로 인해 크리티컬이 true이면 데미지를 2배로 증가
+        
+        return damage.FloatPart;
     }
     
     private void Dead()

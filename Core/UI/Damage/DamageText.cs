@@ -9,7 +9,7 @@ public class DamageText : MonoBehaviour
     public void Init(float amount)
     {
         damageText.text = amount.ToString(CultureInfo.InvariantCulture);
-        Destroy(gameObject, 0.5f);
+        Destroy(gameObject, 0.25f);
     }
     
 }

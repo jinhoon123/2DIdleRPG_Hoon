@@ -6,6 +6,8 @@ public class Character : MonoBehaviour
 {
     #region Components
 
+    public CharacterStat characterStat;
+    
     public CharacterMovement characterMovement;
     public CharacterAnimation characterAnimation;
         
@@ -61,6 +63,9 @@ public class Character : MonoBehaviour
         
     private async UniTask InitComponents()
     {
+        characterStat = GetComponent<CharacterStat>();
+        characterStat.Init(this);
+        
         characterMovement = GetComponent<CharacterMovement>();
         characterMovement.Init(this);
 

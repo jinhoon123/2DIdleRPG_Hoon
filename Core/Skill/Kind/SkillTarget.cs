@@ -1,4 +1,4 @@
-﻿using System;
+﻿using CHV;
 using UnityEngine;
 
 public class SkillTarget : MonoBehaviour
@@ -33,7 +33,11 @@ public class SkillTarget : MonoBehaviour
             
         if (target.characterTarget.IsHitTarget(collider.bounds))
         {
-            skill.Owner.characterTarget.GetTarget().characterHealth.UpdateHealth(50);
+            var skillDamage = new Unified(skill.Data.Attack);
+            var ownerDamage = skill.Owner.characterStat.GetStat(DataTable_Stat_Data.eStatType.Attack);
+            var Damage = skillDamage * ownerDamage;
+            
+            skill.Owner.characterTarget.GetTarget().characterHealth.UpdateHealth(Damage);
             isHit = false;
         }
     }
