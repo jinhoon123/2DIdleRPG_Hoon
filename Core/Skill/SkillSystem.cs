@@ -26,26 +26,25 @@ public class SkillSystem : MonoBehaviour
     #endregion
     
     
-    public async UniTask Init(Character inOwner)
+    public void Init(Character inOwner)
     {
         owner = inOwner;
         globalCooldown = 1.0f;
 
-        await CreateSkill();
+        CreateSkill();
     }
 
-    private async UniTask CreateSkill()
+    private void CreateSkill()
     {
         if (owner.Data.CharacterType == DataTable_Character_Data.eCharacterType.MainCharacter)
         {
             var skill1 = new Skill();
-            await skill1.Init(owner, 10001); // 기본공격
+            skill1.Init(owner, 10001); // 기본공격
             BasicAttack = skill1;
 
-             var skill2 = new Skill();
-             await skill2.Init(owner, 20001);
-
-
+            var skill2 = new Skill();
+            skill2.Init(owner, 20001);
+             
             skills.Add(skill2);
         }
     }

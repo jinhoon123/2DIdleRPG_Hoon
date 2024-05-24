@@ -48,12 +48,22 @@ public class Character : MonoBehaviour
         }
     }
 
-    public async UniTask Init(DataTable_Character_Data inData)
+    public void Init(DataTable_Character_Data inData)
     {
+        if (inData.CharacterType == DataTable_Character_Data.eCharacterType.MainCharacter)
+        {
+            Debug.Log("메인캐릭터 Init");
+        }
+        
         InitData(inData);
-        await InitComponents();
+        InitComponents();
 
         inited = true;
+        
+        if (inData.CharacterType == DataTable_Character_Data.eCharacterType.MainCharacter)
+        {
+            Debug.Log($"메인캐릭터 Inited State : {inited}");
+        }
     }
 
     private void InitData(DataTable_Character_Data inData)
@@ -61,7 +71,7 @@ public class Character : MonoBehaviour
         Data = inData;
     }
         
-    private async UniTask InitComponents()
+    private void InitComponents()
     {
         characterStat = GetComponent<CharacterStat>();
         characterStat.Init(this);
@@ -82,7 +92,7 @@ public class Character : MonoBehaviour
         characterEvent.Init(this);
 
         skillSystem = GetComponent<SkillSystem>();
-        await skillSystem.Init(this);
+        skillSystem.Init(this);
 
         Weapon = transform.Find("Weapon");
     }

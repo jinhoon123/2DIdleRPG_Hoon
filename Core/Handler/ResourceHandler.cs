@@ -3,39 +3,45 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
-using Utility;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class ResourceHandler : MonoSingleton<ResourceHandler>
 {
-    // 스킬
-    public async UniTask InstantiateSkillAsset<T>(string key, UnityAction<T> callback) where T : Object
+    public void InstantiateAsset<T>(string key, UnityAction<T> callback = null) where T : Object
     {
         var handle = Addressables.LoadAssetAsync<T>(key);
-        await handle.Task;
-    
-        callback.Invoke(handle.Result);
+        handle.Completed += (obj) =>
+        {
+            if (obj.Status == AsyncOperationStatus.Succeeded)
+            {
+                callback?.Invoke(handle.Result);
+            }
+        };
     }
     
-    public void InstantiateSkillPrefab(Skill skill)
+    // 캐릭터
+    public void InstantiateMainCharacter(UnityAction<GameObject> callback = null)
     {
-        if (skill.Data.Kind == DataTable_Skill_Data.eKind.Projectile)
+        var handle = Addressables.LoadAssetAsync<GameObject>("MainCharacter");
+        handle.Completed += (obj) =>
         {
-            skill.Asset.skillPrefab.InstantiateAsync(Vector3.zero, Quaternion.identity, GameManager.I.skillRoot)
-                .Completed += (obj) =>
+            if (obj.Status == AsyncOperationStatus.Succeeded)
             {
-                var skillPrefab = obj.Result.GetComponent<SkillProjectile>();
-                skillPrefab.Init(skill);
-            };
-        }
-
-        if (skill.Data.Kind == DataTable_Skill_Data.eKind.Target)
+                GameObject prefab = obj.Result;
+                GameObject character = Instantiate(prefab, GameManager.I.mainCharacterRoot);
+                callback?.Invoke(character);
+            }
+        };
+    }
+    
+    // 스킬
+    public void InstantiateSkillPrefab<T>(Skill skill) where T : ISkillKind
+    {
+        skill.Asset.skillPrefab.InstantiateAsync(Vector3.zero, Quaternion.identity, GameManager.I.skillRoot)
+            .Completed += (obj) =>
         {
-            skill.Asset.skillPrefab.InstantiateAsync(Vector3.zero, Quaternion.identity, GameManager.I.skillRoot)
-                .Completed += (obj) =>
-            {
-                var skillPrefab = obj.Result.GetComponent<SkillTarget>();
-                skillPrefab.Init(skill);
-            };
-        }
+            var skillPrefab = obj.Result.GetComponent<T>();
+            skillPrefab.Init(skill);
+        };
     }
 }

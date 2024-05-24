@@ -2,13 +2,12 @@ using CHV;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using Utility;
 
 public class GameManager : MonoSingleton<GameManager>
 {
     #region Roots
 
-    [SerializeField] private Transform mainCharacterRoot;
+    [SerializeField] public Transform mainCharacterRoot;
     [SerializeField] private Transform monsterRoot;
     [SerializeField] public Transform skillRoot;
 
@@ -26,7 +25,6 @@ public class GameManager : MonoSingleton<GameManager>
     public BackgroundHandler backHandler;
     public BackgroundHandler groundHandler;
     
-
     #endregion
     
     public GameObject mainCharacterPrefab;
@@ -34,21 +32,20 @@ public class GameManager : MonoSingleton<GameManager>
     
     private void Awake()
     {
-        // 메인 캐릭터 생성 및 초기화
-        mainCharacter = Instantiate(mainCharacterPrefab, mainCharacterRoot).GetComponent<Character>();
-        mainCharacter.Init(DataTable_Character_Data.GetData(10001)).Forget();
+        SessionManager.I.Initialize();
+        SessionManager.I.RequestSession(eSession.Game);
         
         backHandler.OnScrollCompletedEvent += GenerateMonsters;
-        
-        GenerateMonster().Forget();
+
+        GenerateMonster();
     }
 
     private void GenerateMonsters()
     {
-        GenerateMonster().Forget();
+        GenerateMonster();
     }
 
-    private async UniTaskVoid GenerateMonster()
+    private void GenerateMonster()
     {
         for (var i = 0; i < 3; i++)
         {
@@ -58,7 +55,7 @@ public class GameManager : MonoSingleton<GameManager>
             
             monsterPosition = new Vector3(monsterPosition.x - 0.5f * i, monsterPosition.y, monsterPosition.z);
             monsterTransform.position = monsterPosition;
-            await monster.Init(DataTable_Character_Data.GetData(20001));
+            monster.Init(DataTable_Character_Data.GetData(20001));
             
             monster.characterHealth.OnCharacterDead += OnMonsterDead;
             monster.gameObject.name = $"monster{i}";

@@ -1,59 +1,45 @@
 using UnityEngine;
 
-namespace Utility
+public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
 {
-    public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
-    {
-        private static T instance = null;
-        private static readonly object Lock = new object();
+    private static T instance = null;
+    private static readonly object Lock = new object();
         
-        public static T I
+    public static T I
+    {
+        get
         {
-            get
+            lock (Lock)
             {
-                lock (Lock)
+                if (instance != null)
                 {
-                    if (instance != null)
-                    {
-                        return instance;
-                    }
-                
-                    var objs = FindObjectsOfType<T>();
-
-                    if (objs.Length > 0)
-                    {
-                        instance = objs[0];
-                    }
-
-                    if (instance != null)
-                    {
-                        return instance;
-                    }
-                    
-                    var objectName = typeof(T).ToString();
-                    var obj = GameObject.Find(objectName);
-                    
-                    if (obj == null)
-                    {
-                        obj = new GameObject(objectName);
-                    }
-                    
-                    instance = obj.AddComponent<T>();
-
                     return instance;
                 }
-            }
-        }
+                
+                var objs = FindObjectsOfType<T>();
 
-        public static void Clear()
-        {
-            if (instance == null)
-            {
-                return;
+                if (objs.Length > 0)
+                {
+                    instance = objs[0];
+                }
+
+                if (instance != null)
+                {
+                    return instance;
+                }
+                    
+                var objectName = typeof(T).ToString();
+                var obj = GameObject.Find(objectName);
+                    
+                if (obj == null)
+                {
+                    obj = new GameObject(objectName);
+                }
+                    
+                instance = obj.AddComponent<T>();
+
+                return instance;
             }
-        
-            DestroyImmediate(instance.gameObject);
-            instance = null;
         }
     }
 }

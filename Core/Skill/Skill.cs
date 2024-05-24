@@ -8,15 +8,18 @@ public class Skill
 
     public SkillAsset Asset;
     public DataTable_Skill_Data Data; // 스킬 데이터
+
+    private SkillFactory skillFactory;
     
     private float cooldownTime;
     
-    public async UniTask Init(Character character, int skillID)
+    public void Init(Character character, int skillID)
     {
         Owner = character;
         Data = DataTable_Skill_Data.GetData(skillID);
         
-        await ResourceHandler.I.InstantiateSkillAsset<SkillAsset>("Skill" + Data.TID.ToString(), (result) => Asset = result);
+        ResourceHandler.I.InstantiateAsset<SkillAsset>("Skill" + Data.TID.ToString(), (result) => Asset = result);
+        skillFactory = new SkillFactory(this);
 
         ResetCooldown();
     }
@@ -49,7 +52,7 @@ public class Skill
 
     public void Execute()
     {
-        ResourceHandler.I.InstantiateSkillPrefab(this);
+        skillFactory.Create(Data.Kind);
     }
     
     public void ResetCooldown()

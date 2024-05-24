@@ -1,7 +1,5 @@
-
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using Utility;
 
 public class UIManager : MonoSingleton<UIManager>
 {

@@ -1,7 +1,7 @@
 using CHV;
 using UnityEngine;
 
-public class SkillProjectile : MonoBehaviour
+public class SkillProjectile : MonoBehaviour, ISkillKind
 {
     private Skill skill;
     private Vector2 skillDirection;

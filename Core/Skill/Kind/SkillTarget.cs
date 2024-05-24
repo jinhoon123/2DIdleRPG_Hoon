@@ -1,7 +1,7 @@
 ﻿using CHV;
 using UnityEngine;
 
-public class SkillTarget : MonoBehaviour
+public class SkillTarget : MonoBehaviour, ISkillKind
 {
     private Skill skill;
     
