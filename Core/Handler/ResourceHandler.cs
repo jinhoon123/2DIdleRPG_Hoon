@@ -29,7 +29,9 @@ public class ResourceHandler : MonoSingleton<ResourceHandler>
             {
                 GameObject prefab = obj.Result;
                 GameObject character = Instantiate(prefab, GameManager.I.mainCharacterRoot);
+                
                 callback?.Invoke(character);
+                Addressables.Release(prefab);
             }
         };
     }
