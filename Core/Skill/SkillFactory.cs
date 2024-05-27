@@ -10,8 +10,8 @@ public class SkillFactory
     {
         skills = new Dictionary<DataTable_Skill_Data.eKind, Action>
         {
-            { DataTable_Skill_Data.eKind.Projectile, () => ResourceHandler.I.InstantiateSkillPrefab<SkillProjectile>(skill) },
-            { DataTable_Skill_Data.eKind.Target, () => ResourceHandler.I.InstantiateSkillPrefab<SkillTarget>(skill) }
+            { DataTable_Skill_Data.eKind.Projectile, () => ResourceHandler.I.InstantiateSkillPrefabAsync<SkillProjectile>(skill) },
+            { DataTable_Skill_Data.eKind.Target, () => ResourceHandler.I.InstantiateSkillPrefabAsync<SkillTarget>(skill) }
         };
     }
 

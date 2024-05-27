@@ -7,7 +7,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class ResourceHandler : MonoSingleton<ResourceHandler>
 {
-    public void InstantiateAsset<T>(string key, UnityAction<T> callback = null) where T : Object
+    public void InstantiateAssetAsync<T>(string key, UnityAction<T> callback = null) where T : Object
     {
         var handle = Addressables.LoadAssetAsync<T>(key);
         handle.Completed += (obj) =>
@@ -20,7 +20,7 @@ public class ResourceHandler : MonoSingleton<ResourceHandler>
     }
     
     // 캐릭터
-    public void InstantiateMainCharacter(UnityAction<GameObject> callback = null)
+    public void InstantiateMainCharacterAsync(UnityAction<GameObject> callback = null)
     {
         var handle = Addressables.LoadAssetAsync<GameObject>("MainCharacter");
         handle.Completed += (obj) =>
@@ -37,7 +37,7 @@ public class ResourceHandler : MonoSingleton<ResourceHandler>
     }
     
     // 스킬
-    public void InstantiateSkillPrefab<T>(Skill skill) where T : ISkillKind
+    public void InstantiateSkillPrefabAsync<T>(Skill skill) where T : ISkillKind
     {
         skill.Asset.skillPrefab.InstantiateAsync(Vector3.zero, Quaternion.identity, GameManager.I.skillRoot)
             .Completed += (obj) =>
