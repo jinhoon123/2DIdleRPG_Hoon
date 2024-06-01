@@ -30,14 +30,14 @@ public class CharacterTarget : MonoBehaviour
     {
         if (owner.Data.CharacterType == DataTable_Character_Data.eCharacterType.Monster)
         {
-            target = GameManager.I.mainCharacter;
+            target = SessionManager.I.SessionSpawner.MainCharacter;
         }
         else
         {
             target = null;
             
             var minDistance = float.MaxValue;
-            foreach (var monster in GameManager.I.monsters)
+            foreach (var monster in SessionManager.I.SessionSpawner.Monsters)
             {
                 var distance = Vector2.Distance(owner.transform.position, monster.transform.position);
                 if (distance < minDistance)

@@ -1,5 +1,6 @@
 using CHV;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class SkillProjectile : MonoBehaviour, ISkillKind
 {
@@ -20,20 +21,25 @@ public class SkillProjectile : MonoBehaviour, ISkillKind
         if (inited)
         {
             transform.Translate(skillDirection * (Time.deltaTime * skill.Data.Speed));
-
-            if (skill.Owner.characterTarget.GetTarget() is null)
+            
+            var target = skill.Owner.characterTarget.GetTarget();
+            if (!target)
             {
                 return;
             }
             
-            if (skill.Owner.characterTarget.GetTarget().characterTarget.IsHitTarget(collider.bounds))
+            if (target && target.characterTarget.IsHitTarget(collider.bounds))
             {
                 var skillDamage = new Unified(skill.Data.Attack);
                 var ownerDamage = skill.Owner.characterStat.GetStat(DataTable_Stat_Data.eStatType.Attack);
                 var damage = skillDamage * ownerDamage;
-                
-                skill.Owner.characterTarget.GetTarget().characterHealth.UpdateHealth(damage);
-                Destroy(gameObject);
+
+                if (target.characterHealth.isDead == false)
+                {
+                    target.characterHealth.UpdateHealth(damage);
+                }
+
+                Addressables.Release(gameObject);
             }
         }
     }

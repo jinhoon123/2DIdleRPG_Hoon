@@ -1,14 +1,10 @@
 ﻿using System.Collections;
+using CHV;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class CharacterHealth : MonoBehaviour
 {
-    #region Events
-    public delegate void CharacterEvent();
-    public event CharacterEvent OnCharacterDead; 
-
-    #endregion
-
     private Character owner;
         
     public float maxHealth;
@@ -58,10 +54,7 @@ public class CharacterHealth : MonoBehaviour
     private void Dead()
     {
         isDead = true;
-        
-        GameManager.I.monsters.Remove(owner);
-        OnCharacterDead?.Invoke();
-        Destroy(gameObject);
+        owner.characterAnimation.PlayAnimation("Dead");
     }
     
     public void OnHit()

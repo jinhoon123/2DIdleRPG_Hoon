@@ -3,17 +3,25 @@ using UnityEngine;
 
 public class GameSession : ISession
 {
+    private SessionManager owner;
+    
     private static ISession Create() => new GameSession();
+    
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void RegisterType()
     {
-        SessionFactory.I.Register(eSession.Game, Create);
+        SessionFactory.I.Register(GameEnums.eSession.Game, Create);
     }
 
 
-    public void SpawnMainCharacter()
+    public void InitializeSession(SessionManager inOwner)
     {
-        SessionManager.I.SessionSpawner.SpawnMainCharacter(DataTable_Character_Data.GetData(10001));
+        this.owner = inOwner;
+    }
+
+    public void GenerateMonster()
+    {
+        owner.SessionSpawner.SpawnMonster(DataTable_Character_Data.GetData(20001));
     }
 }

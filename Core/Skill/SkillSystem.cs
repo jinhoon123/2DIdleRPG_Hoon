@@ -86,7 +86,7 @@ public class SkillSystem : MonoBehaviour
             }
         }
 
-        if (skillQueue.Count > 0 && globalCooldown <= 0.0f && GameManager.I.monsters.Count != 0)
+        if (skillQueue.Count > 0 && globalCooldown <= 0.0f && SessionManager.I.SessionSpawner.Monsters.Count != 0)
         {
             var skill = skillQueue.Dequeue();
             skill.Execute();

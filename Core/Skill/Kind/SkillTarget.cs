@@ -1,5 +1,6 @@
 ﻿using CHV;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class SkillTarget : MonoBehaviour, ISkillKind
 {
@@ -20,24 +21,32 @@ public class SkillTarget : MonoBehaviour, ISkillKind
 
     private void Update()
     {
-        if (isHit == false || inited == false)
+        if (inited == false)
         {
             return;
         }
         
-        if (target is null || target.characterHealth.isDead)
+        if (isHit == false)
         {
-            isHit = false;
             return;
         }
-            
-        if (target.characterTarget.IsHitTarget(collider.bounds))
+
+        if (!target)
+        {
+            return;
+        }
+        
+        if (target && target.characterTarget.IsHitTarget(collider.bounds))
         {
             var skillDamage = new Unified(skill.Data.Attack);
             var ownerDamage = skill.Owner.characterStat.GetStat(DataTable_Stat_Data.eStatType.Attack);
-            var Damage = skillDamage * ownerDamage;
+            var damage = skillDamage * ownerDamage;
+
+            if (target.characterHealth.isDead == false)
+            {
+                skill.Owner.characterTarget.GetTarget().characterHealth.UpdateHealth(damage);
+            }
             
-            skill.Owner.characterTarget.GetTarget().characterHealth.UpdateHealth(Damage);
             isHit = false;
         }
     }
@@ -49,10 +58,20 @@ public class SkillTarget : MonoBehaviour, ISkillKind
         
         skill = inSkill;
         target = skill.Owner.characterTarget.GetTarget();
-        transform.position = inSkill.Owner.Weapon.position;
-        transform.position = skill.Owner.characterTarget.GetTarget().transform.position;
-        inited = true;
-        gameObject.SetActive(true);
+
+        if (target != null)
+        {
+            transform.position = inSkill.Owner.Weapon.position;
+            transform.position = target.transform.position;
+        
+            inited = true;
+            gameObject.SetActive(true);
+        }
+        else 
+        {
+            // 스킬이 생성되서 Target을 지정하려고 했으나 다른 요인으로 사망했을 때 
+            Addressables.Release(gameObject);
+        }
     }
 
     public void SkillHitEvent()
@@ -62,6 +81,6 @@ public class SkillTarget : MonoBehaviour, ISkillKind
 
     public void SkillAnimationEnd()
     {
-        Destroy(gameObject);
+        Addressables.Release(gameObject);
     }
 }

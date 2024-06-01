@@ -1,27 +1,26 @@
-using Cysharp.Threading.Tasks;
+using CHV;
 
-public enum eSession
-{
-    // 스테이지
-    Game = 0,
-    
-    // 던전
-    Dungeon = 1
-}
 public class SessionManager : Singleton<SessionManager>
 {
     private ISession session;
     
     public SessionSpawner SessionSpawner;
+    public SessionEventManager SessionEventManager;
 
     public void Initialize()
     {
-        SessionSpawner = new SessionSpawner();
+        SessionEventManager = new SessionEventManager(this);
+        
+        SessionSpawner = new SessionSpawner(this);
+        SessionSpawner.SpawnMainCharacter(DataTable_Character_Data.GetData(GameConstants.MAIN_CHARACTER_DATA_ID));
     }
     
-    public void RequestSession(eSession sessionType)
+    public void RequestSession(GameEnums.eSession sessionType)
     {
+        session = null;
         session = SessionFactory.I.Create(sessionType);
-        session.SpawnMainCharacter();
+        session.InitializeSession(this);
+        
+        session.GenerateMonster();
     }
 }

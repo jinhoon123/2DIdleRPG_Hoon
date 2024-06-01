@@ -18,7 +18,7 @@ public class Skill
         Owner = character;
         Data = DataTable_Skill_Data.GetData(skillID);
         
-        ResourceHandler.I.InstantiateAssetAsync<SkillAsset>("Skill" + Data.TID.ToString(), (result) => Asset = result);
+        ResourceHandler.I.LoadAssetAsync<SkillAsset>("Skill" + Data.TID.ToString(), (result) => Asset = result);
         skillFactory = new SkillFactory(this);
 
         ResetCooldown();

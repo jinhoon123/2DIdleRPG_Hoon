@@ -3,8 +3,9 @@ using CHV;
 
 public class Stat
 {
-    public DataTable_Stat_Data.eStatType StatType;
-    private Unified baseValue;
+    public readonly DataTable_Stat_Data.eStatType StatType;
+    
+    private readonly Unified baseValue;
     private readonly List<IStatModifier> modifiers = new();
     private readonly Operation operation = new();
     

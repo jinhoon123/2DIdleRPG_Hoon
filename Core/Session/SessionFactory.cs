@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 public class SessionFactory : Singleton<SessionFactory>
 {
-    private readonly Dictionary<eSession, Func<ISession>> factories = new Dictionary<eSession, Func<ISession>>();
+    private readonly Dictionary<GameEnums.eSession, Func<ISession>> factories = new Dictionary<GameEnums.eSession, Func<ISession>>();
         
-    public ISession Create(eSession contentType)
+    public ISession Create(GameEnums.eSession contentType)
     {
         if (!factories.TryGetValue(contentType, out var factory))
         {

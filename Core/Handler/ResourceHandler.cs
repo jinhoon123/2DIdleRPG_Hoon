@@ -7,7 +7,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class ResourceHandler : MonoSingleton<ResourceHandler>
 {
-    public void InstantiateAssetAsync<T>(string key, UnityAction<T> callback = null) where T : Object
+    public void LoadAssetAsync<T>(string key, UnityAction<T> callback = null) where T : Object
     {
         var handle = Addressables.LoadAssetAsync<T>(key);
         handle.Completed += (obj) =>
@@ -20,18 +20,14 @@ public class ResourceHandler : MonoSingleton<ResourceHandler>
     }
     
     // 캐릭터
-    public void InstantiateMainCharacterAsync(UnityAction<GameObject> callback = null)
+    public void InstantiateCharacterAsync(int tid, DataTable_Character_Data.eCharacterType type, UnityAction<Character> callback = null)
     {
-        var handle = Addressables.LoadAssetAsync<GameObject>("MainCharacter");
+        var handle = Addressables.InstantiateAsync(type.ToString() + tid.ToString());
         handle.Completed += (obj) =>
         {
             if (obj.Status == AsyncOperationStatus.Succeeded)
             {
-                GameObject prefab = obj.Result;
-                GameObject character = Instantiate(prefab, GameManager.I.mainCharacterRoot);
-                
-                callback?.Invoke(character);
-                Addressables.Release(prefab);
+                callback?.Invoke(obj.Result.GetComponent<Character>());
             }
         };
     }
