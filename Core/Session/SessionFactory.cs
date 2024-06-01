@@ -15,8 +15,8 @@ public class SessionFactory : Singleton<SessionFactory>
         return factory();
     }
 
-    public void Register(eSession contentType, Func<ISession> factoryMethod)
+    public void Register(GameEnums.eSession contentType, Func<ISession> factoryMethod)
     {
-        factories[contentType] = factoryMethod;
+        factories.TryAdd(contentType, factoryMethod);
     }
 }
